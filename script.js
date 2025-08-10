@@ -8,20 +8,26 @@ document.addEventListener('DOMContentLoaded', function() {
     addSparkleEffect();
 });
 
-// Crear corazones flotantes
+// Crear corazones flotantes estilo Minecraft
 function createFloatingHearts() {
     const heartsContainer = document.querySelector('.hearts-container');
-    const heartSymbols = ['💕', '💖', '💗', '💘', '💝', '💞', '💟', '❤️', '🧡', '💛', '💚', '💙', '💜', '🤍', '🖤', '🤎'];
+    // Corazones estilo Minecraft pixelados
+    const heartSymbols = ['♥', '❤', '💗', '�', '�'];
     
     heartsInterval = setInterval(() => {
         const heart = document.createElement('div');
-        heart.className = 'heart';
+        heart.className = 'heart minecraft-heart';
         heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
         
         // Posición aleatoria
         heart.style.left = Math.random() * 100 + '%';
-        heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        heart.style.animationDuration = (Math.random() * 4 + 3) + 's';
         heart.style.animationDelay = Math.random() * 2 + 's';
+        
+        // Colores estilo Minecraft
+        const colors = ['#ff1493', '#dc143c', '#ff69b4', '#ff6b9d', '#d63384'];
+        heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+        heart.style.fontSize = (Math.random() * 15 + 20) + 'px';
         
         heartsContainer.appendChild(heart);
         
@@ -30,8 +36,8 @@ function createFloatingHearts() {
             if (heart.parentNode) {
                 heart.parentNode.removeChild(heart);
             }
-        }, 5000);
-    }, 300);
+        }, 7000);
+    }, 200);
 }
 
 // Efecto de brillos al hacer clic
