@@ -130,7 +130,7 @@ function createHeartExplosion() {
     for (let i = 0; i < 30; i++) {
         setTimeout(() => {
             const heart = document.createElement('div');
-            heart.textContent = '💖';
+            heart.textContent = '♥';
             heart.style.position = 'fixed';
             heart.style.left = '50%';
             heart.style.top = '50%';
@@ -160,7 +160,7 @@ function createHeartExplosion() {
 // Crear confetti
 function createConfetti() {
     const colors = ['#ff69b4', '#ffd700', '#00ff00', '#00bfff', '#ff6347', '#dda0dd'];
-    const shapes = ['🎊', '🎉', '✨', '🌟', '💫', '⭐'];
+    const shapes = ['*', '+', 'x', '•', '○', '◦'];
     
     for (let i = 0; i < 50; i++) {
         setTimeout(() => {
