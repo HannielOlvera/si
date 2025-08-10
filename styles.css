@@ -233,6 +233,27 @@ body {
     }
 }
 
+@keyframes wordFall {
+    0% {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(220px);
+        opacity: 0;
+    }
+}
+
+.falling-word {
+    animation: wordFall 3s linear forwards;
+}
+
 /* Mensaje de amor */
 .message-area {
     margin-top: 30px;
@@ -321,6 +342,62 @@ body {
 .btn-yes:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(255, 107, 157, 0.4);
+}
+
+.hidden-btn {
+    background: linear-gradient(135deg, #666, #444) !important;
+    color: #999 !important;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.hidden-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, 
+        transparent 25%, 
+        rgba(255,255,255,0.1) 25%, 
+        rgba(255,255,255,0.1) 50%, 
+        transparent 50%, 
+        transparent 75%, 
+        rgba(255,255,255,0.1) 75%);
+    background-size: 20px 20px;
+    animation: hiddenPattern 2s linear infinite;
+}
+
+@keyframes hiddenPattern {
+    0% { transform: translateX(-20px); }
+    100% { transform: translateX(0); }
+}
+
+.revealed-btn {
+    background: linear-gradient(135deg, #ff6b9d, #d63384) !important;
+    color: white !important;
+    animation: revealButton 0.8s ease-out forwards;
+}
+
+.revealed-btn::before {
+    display: none;
+}
+
+@keyframes revealButton {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 4px 12px rgba(255, 107, 157, 0.3);
+    }
+    50% {
+        transform: scale(1.1);
+        box-shadow: 0 8px 20px rgba(255, 107, 157, 0.6);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 4px 12px rgba(255, 107, 157, 0.3);
+    }
 }
 
 #yesBtn2 {

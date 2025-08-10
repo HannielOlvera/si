@@ -25,6 +25,7 @@ function createLoadingHearts() {
     const loadingContainer = document.querySelector('.minecraft-hearts-rain');
     if (!loadingContainer) return;
     
+    // Corazones pixelados
     loadingHeartsInterval = setInterval(() => {
         // Crear múltiples corazones a la vez
         for (let j = 0; j < 3; j++) {
@@ -57,6 +58,48 @@ function createLoadingHearts() {
             }, j * 100);
         }
     }, 120);  // Más frecuente para lluvia densa
+    
+    // Palabras cayendo
+    const wordInterval = setInterval(() => {
+        createFallingWord();
+    }, 800);
+    
+    // Parar todo después de 10 segundos
+    setTimeout(() => {
+        clearInterval(loadingHeartsInterval);
+        clearInterval(wordInterval);
+    }, 10000);
+}
+
+// Crear palabras cayendo
+function createFallingWord() {
+    const loadingContainer = document.querySelector('.minecraft-hearts-rain');
+    if (!loadingContainer) return;
+    
+    const words = ['ola', 'tqm', '♥', 'hola', 'amor', 'si'];
+    const word = document.createElement('div');
+    word.textContent = words[Math.floor(Math.random() * words.length)];
+    word.className = 'falling-word';
+    
+    word.style.position = 'absolute';
+    word.style.left = Math.random() * 250 + 'px';
+    word.style.top = '-20px';
+    word.style.color = '#ff69b4';
+    word.style.fontSize = '14px';
+    word.style.fontFamily = 'Courier New, monospace';
+    word.style.fontWeight = 'bold';
+    word.style.textShadow = '2px 2px 0px rgba(0,0,0,0.8)';
+    word.style.animation = 'wordFall 3s linear forwards';
+    word.style.pointerEvents = 'none';
+    word.style.zIndex = '10';
+    
+    loadingContainer.appendChild(word);
+    
+    setTimeout(() => {
+        if (word.parentNode) {
+            word.parentNode.removeChild(word);
+        }
+    }, 3000);
 }
 
 // Crear corazones flotantes estilo Minecraft
@@ -142,6 +185,54 @@ function handleYes() {
     setTimeout(() => {
         createConfetti();
     }, 500);
+}
+
+// Revelar todos los botones cuando se hace clic en uno
+function revealAllButtons(clickedButton) {
+    const allButtons = document.querySelectorAll('.hidden-btn');
+    
+    allButtons.forEach((btn, index) => {
+        setTimeout(() => {
+            btn.classList.remove('hidden-btn');
+            btn.classList.add('revealed-btn');
+            btn.textContent = btn.getAttribute('data-answer');
+            btn.onclick = handleYes;
+        }, index * 200);
+    });
+    
+    // Crear efecto especial de revelación
+    createRevealEffect();
+}
+
+// Efecto especial cuando se revelan los botones
+function createRevealEffect() {
+    // Explosión de brillos
+    for (let i = 0; i < 15; i++) {
+        setTimeout(() => {
+            const sparkle = document.createElement('div');
+            sparkle.textContent = '✨';
+            sparkle.style.position = 'fixed';
+            sparkle.style.left = '50%';
+            sparkle.style.top = '70%';
+            sparkle.style.fontSize = '20px';
+            sparkle.style.pointerEvents = 'none';
+            sparkle.style.zIndex = '1000';
+            sparkle.style.animation = 'revealSparkle 1.5s ease-out forwards';
+            
+            const angle = (i / 15) * 360;
+            const distance = Math.random() * 100 + 50;
+            sparkle.style.setProperty('--reveal-angle', angle + 'deg');
+            sparkle.style.setProperty('--reveal-distance', distance + 'px');
+            
+            document.body.appendChild(sparkle);
+            
+            setTimeout(() => {
+                if (sparkle.parentNode) {
+                    sparkle.parentNode.removeChild(sparkle);
+                }
+            }, 1500);
+        }, i * 100);
+    }
 }
 
 // Crear explosión de corazones
@@ -369,6 +460,20 @@ style.textContent = `
                 calc(-50% + cos(var(--spark-angle)) * var(--spark-velocity)),
                 calc(-50% + sin(var(--spark-angle)) * var(--spark-velocity))
             ) scale(0);
+            opacity: 0;
+        }
+    }
+    
+    @keyframes revealSparkle {
+        0% {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+        100% {
+            transform: translate(
+                calc(-50% + cos(var(--reveal-angle)) * var(--reveal-distance)),
+                calc(-50% + sin(var(--reveal-angle)) * var(--reveal-distance))
+            ) scale(0.3);
             opacity: 0;
         }
     }
