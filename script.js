@@ -127,7 +127,7 @@ function startMainEffects() {
     addSparkleEffect();
     addMouseTrail();
     // addScreenShake(); // Desactivado para evitar movimientos bruscos
-    addRainbowEffect();
+    // addRainbowEffect(); // Quitado para evitar filtros que afectan a la tarjeta
     addKeyboardEffects();
     addRandomHeartBursts();
     addFloatingBubbles();
