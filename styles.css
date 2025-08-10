@@ -180,55 +180,45 @@ body {
     overflow: hidden;
 }
 
-.loading-text {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: #ff69b4;
-    font-family: 'Courier New', monospace;
-    font-size: 14px;
-    font-weight: bold;
-    text-shadow: 2px 2px 0px rgba(0,0,0,0.8);
-    animation: loadingBlink 1.5s infinite;
-}
-
-@keyframes loadingBlink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0.3; }
-}
-
 .minecraft-heart-pixel {
     position: absolute;
-    width: 16px;
-    height: 16px;
-    background: #ff69b4;
+    width: 24px;
+    height: 24px;
     animation: pixelHeartFall 3s linear infinite;
     image-rendering: pixelated;
 }
 
+/* Corazón pixelado estilo Minecraft más grande */
 .minecraft-heart-pixel::before {
     content: '';
     position: absolute;
-    width: 16px;
-    height: 16px;
-    background: 
-        /* Forma de corazón pixelada */
-        radial-gradient(circle at 4px 4px, #ff1493 2px, transparent 2px),
-        radial-gradient(circle at 12px 4px, #ff1493 2px, transparent 2px),
-        linear-gradient(to bottom, 
-            transparent 0px, transparent 4px,
-            #dc143c 4px, #dc143c 8px,
-            #ff69b4 8px, #ff69b4 12px,
-            #ff1493 12px, #ff1493 14px,
-            transparent 14px
+    width: 24px;
+    height: 24px;
+    background-image: 
+        /* Forma de corazón pixelada 8-bit */
+        linear-gradient(to right, 
+            transparent 0px, transparent 3px,
+            #ff1493 3px, #ff1493 9px,
+            transparent 9px, transparent 12px,
+            #ff1493 12px, #ff1493 18px,
+            transparent 18px, transparent 21px,
+            #ff1493 21px, #ff1493 24px
+        ),
+        linear-gradient(to bottom,
+            transparent 0px, transparent 3px,
+            #dc143c 3px, #dc143c 6px,
+            #ff69b4 6px, #ff69b4 12px,
+            #ff1493 12px, #ff1493 18px,
+            #dc143c 18px, #dc143c 21px,
+            transparent 21px
         );
-    background-size: 16px 16px;
+    background-size: 24px 24px;
+    filter: contrast(1.3) saturate(1.5);
 }
 
 @keyframes pixelHeartFall {
     0% {
-        transform: translateY(-20px);
+        transform: translateY(-30px) rotate(0deg);
         opacity: 0;
     }
     10% {
@@ -238,7 +228,7 @@ body {
         opacity: 1;
     }
     100% {
-        transform: translateY(220px);
+        transform: translateY(230px) rotate(360deg);
         opacity: 0;
     }
 }

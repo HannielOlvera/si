@@ -1,12 +1,23 @@
 // Variables globales
-let heartsInterval;    // Solo corazones básicos pixelados
-    const heartSymbols = ['♥', '♥', '♥', '♥'];  // Solo corazones simpleset loadingHeartsInterval;
+let heartsInterval;
+let loadingHeartsInterval;
+let mouseTrailInterval;
+let screenShakeInterval;
+let rainbowInterval;
+let particleExplosions = [];
 
 // Inicializar cuando se carga la página
 document.addEventListener('DOMContentLoaded', function() {
     createFloatingHearts();
     createLoadingHearts();
     addSparkleEffect();
+    addMouseTrail();
+    addScreenShake();
+    addRainbowEffect();
+    addKeyboardEffects();
+    addRandomHeartBursts();
+    addFloatingBubbles();
+    addGlitchEffect();
 });
 
 // Crear corazones en la pantalla de carga estilo Minecraft
@@ -15,27 +26,37 @@ function createLoadingHearts() {
     if (!loadingContainer) return;
     
     loadingHeartsInterval = setInterval(() => {
-        const heart = document.createElement('div');
-        heart.className = 'minecraft-heart-pixel';
-        
-        // Posición aleatoria en x
-        heart.style.left = Math.random() * 280 + 'px';
-        heart.style.animationDuration = (Math.random() * 2 + 2) + 's';
-        heart.style.animationDelay = Math.random() * 1 + 's';
-        
-        // Colores rosa estilo Minecraft
-        const colors = ['#ff69b4', '#ff1493', '#dc143c', '#ff6b9d'];
-        heart.style.background = colors[Math.floor(Math.random() * colors.length)];
-        
-        loadingContainer.appendChild(heart);
-        
-        // Remover después de la animación
-        setTimeout(() => {
-            if (heart.parentNode) {
-                heart.parentNode.removeChild(heart);
-            }
-        }, 4000);
-    }, 150);
+        // Crear múltiples corazones a la vez
+        for (let j = 0; j < 3; j++) {
+            setTimeout(() => {
+                const heart = document.createElement('div');
+                heart.className = 'minecraft-heart-pixel';
+                
+                // Posición aleatoria en x
+                heart.style.left = Math.random() * 270 + 'px';
+                heart.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                heart.style.animationDelay = Math.random() * 0.5 + 's';
+                
+                // Colores rosa estilo Minecraft más vibrantes
+                const colors = ['#ff1493', '#dc143c', '#ff69b4', '#ff6b9d'];
+                heart.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                // Tamaños variables
+                const size = Math.random() * 8 + 16;
+                heart.style.width = size + 'px';
+                heart.style.height = size + 'px';
+                
+                loadingContainer.appendChild(heart);
+                
+                // Remover después de la animación
+                setTimeout(() => {
+                    if (heart.parentNode) {
+                        heart.parentNode.removeChild(heart);
+                    }
+                }, 4000);
+            }, j * 100);
+        }
+    }, 120);  // Más frecuente para lluvia densa
 }
 
 // Crear corazones flotantes estilo Minecraft
@@ -228,17 +249,6 @@ style.textContent = `
         }
     }
     
-    @keyframes fall {
-        0% {
-            transform: translateY(0) rotate(0deg);
-            opacity: 1;
-        }
-        100% {
-            transform: translateY(100vh) rotate(360deg);
-            opacity: 0;
-        }
-    }
-    
     @keyframes confettiFall {
         0% {
             transform: translateY(0) rotate(0deg);
@@ -246,6 +256,119 @@ style.textContent = `
         }
         100% {
             transform: translateY(100vh) rotate(720deg);
+            opacity: 0;
+        }
+    }
+    
+    @keyframes trailFade {
+        0% {
+            opacity: 1;
+            transform: scale(1);
+        }
+        100% {
+            opacity: 0;
+            transform: scale(0.3) translateY(-20px);
+        }
+    }
+    
+    @keyframes burstOut {
+        0% {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+        100% {
+            transform: translate(
+                calc(-50% + cos(var(--burst-angle)) * var(--burst-distance)),
+                calc(-50% + sin(var(--burst-angle)) * var(--burst-distance))
+            ) scale(0.5);
+            opacity: 0;
+        }
+    }
+    
+    @keyframes bubbleFloat {
+        0% {
+            transform: translateY(0) scale(0);
+            opacity: 0;
+        }
+        20% {
+            opacity: 1;
+            transform: translateY(-100px) scale(1);
+        }
+        100% {
+            transform: translateY(-100vh) scale(0.8);
+            opacity: 0;
+        }
+    }
+    
+    @keyframes particleExplosion {
+        0% {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+        100% {
+            transform: translate(
+                calc(-50% + cos(var(--particle-angle)) * var(--particle-velocity)),
+                calc(-50% + sin(var(--particle-angle)) * var(--particle-velocity))
+            ) scale(0);
+            opacity: 0;
+        }
+    }
+    
+    @keyframes rotateAround {
+        0% {
+            transform: translate(-50%, -50%) rotate(0deg) translateX(var(--rotate-radius)) rotate(0deg);
+            opacity: 0;
+        }
+        20% {
+            opacity: 1;
+        }
+        80% {
+            opacity: 1;
+        }
+        100% {
+            transform: translate(-50%, -50%) rotate(360deg) translateX(var(--rotate-radius)) rotate(-360deg);
+            opacity: 0;
+        }
+        animation-delay: var(--rotate-delay);
+    }
+    
+    @keyframes spiralOut {
+        0% {
+            transform: translate(-50%, -50%) rotate(var(--spiral-angle)) translateX(0);
+            opacity: 1;
+        }
+        100% {
+            transform: translate(-50%, -50%) rotate(calc(var(--spiral-angle) + 720deg)) translateX(var(--spiral-radius));
+            opacity: 0;
+        }
+    }
+    
+    @keyframes waveUp {
+        0% {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+        50% {
+            transform: translateY(-100px) scale(1.5);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(0) scale(1);
+            opacity: 0;
+        }
+        animation-delay: var(--wave-delay);
+    }
+    
+    @keyframes fireworkSpark {
+        0% {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+        100% {
+            transform: translate(
+                calc(-50% + cos(var(--spark-angle)) * var(--spark-velocity)),
+                calc(-50% + sin(var(--spark-angle)) * var(--spark-velocity))
+            ) scale(0);
             opacity: 0;
         }
     }
@@ -282,3 +405,371 @@ document.addEventListener('keydown', function(e) {
         handleYes();
     }
 });
+
+// ===== EFECTOS DIVERTIDOS ADICIONALES =====
+
+// Rastro del mouse con corazones
+function addMouseTrail() {
+    let lastMousePos = { x: 0, y: 0 };
+    
+    document.addEventListener('mousemove', function(e) {
+        // Crear corazón cada cierta distancia
+        const distance = Math.sqrt(
+            Math.pow(e.clientX - lastMousePos.x, 2) + 
+            Math.pow(e.clientY - lastMousePos.y, 2)
+        );
+        
+        if (distance > 30) {
+            createTrailHeart(e.clientX, e.clientY);
+            lastMousePos = { x: e.clientX, y: e.clientY };
+        }
+    });
+}
+
+function createTrailHeart(x, y) {
+    const heart = document.createElement('div');
+    heart.textContent = '♥';
+    heart.style.position = 'fixed';
+    heart.style.left = x + 'px';
+    heart.style.top = y + 'px';
+    heart.style.color = '#ff69b4';
+    heart.style.fontSize = '12px';
+    heart.style.pointerEvents = 'none';
+    heart.style.zIndex = '999';
+    heart.style.animation = 'trailFade 1s ease-out forwards';
+    
+    document.body.appendChild(heart);
+    
+    setTimeout(() => {
+        if (heart.parentNode) {
+            heart.parentNode.removeChild(heart);
+        }
+    }, 1000);
+}
+
+// Efecto de vibración de pantalla
+function addScreenShake() {
+    let shakeCount = 0;
+    
+    setInterval(() => {
+        if (Math.random() < 0.1 && shakeCount < 3) { // 10% chance cada segundo
+            shakeScreen();
+            shakeCount++;
+        } else if (shakeCount >= 3) {
+            shakeCount = 0;
+        }
+    }, 1000);
+}
+
+function shakeScreen() {
+    const body = document.body;
+    let shakes = 0;
+    const maxShakes = 6;
+    
+    const shakeInterval = setInterval(() => {
+        if (shakes < maxShakes) {
+            const intensity = 3;
+            const x = (Math.random() - 0.5) * intensity;
+            const y = (Math.random() - 0.5) * intensity;
+            body.style.transform = `translate(${x}px, ${y}px)`;
+            shakes++;
+        } else {
+            body.style.transform = 'translate(0, 0)';
+            clearInterval(shakeInterval);
+        }
+    }, 50);
+}
+
+// Efecto arco iris en el fondo
+function addRainbowEffect() {
+    let hueShift = 0;
+    
+    setInterval(() => {
+        hueShift += 1;
+        if (hueShift > 360) hueShift = 0;
+        
+        document.body.style.filter = `hue-rotate(${hueShift}deg) saturate(1.1)`;
+    }, 100);
+}
+
+// Efectos de teclado divertidos
+function addKeyboardEffects() {
+    document.addEventListener('keydown', function(e) {
+        switch(e.key.toLowerCase()) {
+            case 'h':
+                createRandomHeartBurst();
+                break;
+            case 'c':
+                createColorExplosion();
+                break;
+            case 'r':
+                createRotatingHearts();
+                break;
+            case 's':
+                createSpiralEffect();
+                break;
+            case 'w':
+                createWaveEffect();
+                break;
+            case 'f':
+                createFireworks();
+                break;
+        }
+    });
+}
+
+// Explosiones aleatorias de corazones
+function addRandomHeartBursts() {
+    setInterval(() => {
+        if (Math.random() < 0.05) { // 5% chance cada segundo
+            createRandomHeartBurst();
+        }
+    }, 1000);
+}
+
+function createRandomHeartBurst() {
+    const x = Math.random() * window.innerWidth;
+    const y = Math.random() * window.innerHeight;
+    
+    for (let i = 0; i < 8; i++) {
+        setTimeout(() => {
+            const heart = document.createElement('div');
+            heart.textContent = '♥';
+            heart.style.position = 'fixed';
+            heart.style.left = x + 'px';
+            heart.style.top = y + 'px';
+            heart.style.color = '#ff1493';
+            heart.style.fontSize = '20px';
+            heart.style.pointerEvents = 'none';
+            heart.style.zIndex = '1000';
+            
+            const angle = (i / 8) * 360;
+            const distance = 100;
+            heart.style.animation = `burstOut 1.5s ease-out forwards`;
+            heart.style.setProperty('--burst-angle', angle + 'deg');
+            heart.style.setProperty('--burst-distance', distance + 'px');
+            
+            document.body.appendChild(heart);
+            
+            setTimeout(() => {
+                if (heart.parentNode) {
+                    heart.parentNode.removeChild(heart);
+                }
+            }, 1500);
+        }, i * 100);
+    }
+}
+
+// Burbujas flotantes
+function addFloatingBubbles() {
+    setInterval(() => {
+        if (Math.random() < 0.3) {
+            createBubble();
+        }
+    }, 2000);
+}
+
+function createBubble() {
+    const bubble = document.createElement('div');
+    bubble.className = 'floating-bubble';
+    bubble.style.position = 'fixed';
+    bubble.style.left = Math.random() * window.innerWidth + 'px';
+    bubble.style.top = window.innerHeight + 'px';
+    bubble.style.width = (Math.random() * 30 + 10) + 'px';
+    bubble.style.height = bubble.style.width;
+    bubble.style.borderRadius = '50%';
+    bubble.style.background = 'rgba(255, 105, 180, 0.3)';
+    bubble.style.border = '2px solid rgba(255, 105, 180, 0.6)';
+    bubble.style.pointerEvents = 'none';
+    bubble.style.zIndex = '998';
+    bubble.style.animation = 'bubbleFloat 4s ease-out forwards';
+    
+    document.body.appendChild(bubble);
+    
+    setTimeout(() => {
+        if (bubble.parentNode) {
+            bubble.parentNode.removeChild(bubble);
+        }
+    }, 4000);
+}
+
+// Efecto glitch ocasional
+function addGlitchEffect() {
+    setInterval(() => {
+        if (Math.random() < 0.02) { // 2% chance
+            glitchCard();
+        }
+    }, 1000);
+}
+
+function glitchCard() {
+    const card = document.querySelector('.invitation-card');
+    if (!card) return;
+    
+    let glitches = 0;
+    const maxGlitches = 5;
+    
+    const glitchInterval = setInterval(() => {
+        if (glitches < maxGlitches) {
+            card.style.filter = 'hue-rotate(' + Math.random() * 360 + 'deg) contrast(' + (Math.random() * 2 + 0.5) + ')';
+            card.style.transform = 'translate(' + (Math.random() - 0.5) * 10 + 'px, ' + (Math.random() - 0.5) * 10 + 'px) scale(' + (Math.random() * 0.1 + 0.95) + ')';
+            glitches++;
+        } else {
+            card.style.filter = '';
+            card.style.transform = '';
+            clearInterval(glitchInterval);
+        }
+    }, 100);
+}
+
+// Explosión de colores
+function createColorExplosion() {
+    const colors = ['#ff69b4', '#ff1493', '#dc143c', '#ff6347', '#ffa500', '#ffff00', '#00ff00', '#00bfff'];
+    
+    for (let i = 0; i < 20; i++) {
+        setTimeout(() => {
+            const particle = document.createElement('div');
+            particle.style.position = 'fixed';
+            particle.style.left = '50%';
+            particle.style.top = '50%';
+            particle.style.width = '8px';
+            particle.style.height = '8px';
+            particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+            particle.style.borderRadius = '50%';
+            particle.style.pointerEvents = 'none';
+            particle.style.zIndex = '1000';
+            
+            const angle = Math.random() * 360;
+            const velocity = Math.random() * 300 + 100;
+            particle.style.animation = 'particleExplosion 2s ease-out forwards';
+            particle.style.setProperty('--particle-angle', angle + 'deg');
+            particle.style.setProperty('--particle-velocity', velocity + 'px');
+            
+            document.body.appendChild(particle);
+            
+            setTimeout(() => {
+                if (particle.parentNode) {
+                    particle.parentNode.removeChild(particle);
+                }
+            }, 2000);
+        }, i * 50);
+    }
+}
+
+// Corazones rotatorios
+function createRotatingHearts() {
+    for (let i = 0; i < 6; i++) {
+        const heart = document.createElement('div');
+        heart.textContent = '♥';
+        heart.style.position = 'fixed';
+        heart.style.left = '50%';
+        heart.style.top = '50%';
+        heart.style.color = '#ff1493';
+        heart.style.fontSize = '30px';
+        heart.style.pointerEvents = 'none';
+        heart.style.zIndex = '1000';
+        heart.style.animation = 'rotateAround 3s ease-in-out forwards';
+        heart.style.setProperty('--rotate-delay', (i * 0.5) + 's');
+        heart.style.setProperty('--rotate-radius', '100px');
+        
+        document.body.appendChild(heart);
+        
+        setTimeout(() => {
+            if (heart.parentNode) {
+                heart.parentNode.removeChild(heart);
+            }
+        }, 3000);
+    }
+}
+
+// Efecto espiral
+function createSpiralEffect() {
+    for (let i = 0; i < 15; i++) {
+        setTimeout(() => {
+            const heart = document.createElement('div');
+            heart.textContent = '♥';
+            heart.style.position = 'fixed';
+            heart.style.left = '50%';
+            heart.style.top = '50%';
+            heart.style.color = '#ff69b4';
+            heart.style.fontSize = '20px';
+            heart.style.pointerEvents = 'none';
+            heart.style.zIndex = '1000';
+            heart.style.animation = 'spiralOut 2s ease-out forwards';
+            heart.style.setProperty('--spiral-angle', (i * 24) + 'deg');
+            heart.style.setProperty('--spiral-radius', (i * 10) + 'px');
+            
+            document.body.appendChild(heart);
+            
+            setTimeout(() => {
+                if (heart.parentNode) {
+                    heart.parentNode.removeChild(heart);
+                }
+            }, 2000);
+        }, i * 100);
+    }
+}
+
+// Efecto onda
+function createWaveEffect() {
+    for (let i = 0; i < 10; i++) {
+        setTimeout(() => {
+            const heart = document.createElement('div');
+            heart.textContent = '♥';
+            heart.style.position = 'fixed';
+            heart.style.left = (i * (window.innerWidth / 10)) + 'px';
+            heart.style.top = '50%';
+            heart.style.color = '#dc143c';
+            heart.style.fontSize = '25px';
+            heart.style.pointerEvents = 'none';
+            heart.style.zIndex = '1000';
+            heart.style.animation = 'waveUp 1.5s ease-in-out forwards';
+            heart.style.setProperty('--wave-delay', (i * 0.1) + 's');
+            
+            document.body.appendChild(heart);
+            
+            setTimeout(() => {
+                if (heart.parentNode) {
+                    heart.parentNode.removeChild(heart);
+                }
+            }, 1500);
+        }, i * 100);
+    }
+}
+
+// Fuegos artificiales
+function createFireworks() {
+    const x = Math.random() * window.innerWidth;
+    const y = Math.random() * (window.innerHeight / 2);
+    
+    // Explosión principal
+    for (let i = 0; i < 12; i++) {
+        setTimeout(() => {
+            const spark = document.createElement('div');
+            spark.style.position = 'fixed';
+            spark.style.left = x + 'px';
+            spark.style.top = y + 'px';
+            spark.style.width = '4px';
+            spark.style.height = '4px';
+            spark.style.background = '#ffff00';
+            spark.style.borderRadius = '50%';
+            spark.style.pointerEvents = 'none';
+            spark.style.zIndex = '1000';
+            spark.style.boxShadow = '0 0 6px #ffff00';
+            
+            const angle = (i / 12) * 360;
+            const velocity = Math.random() * 150 + 100;
+            spark.style.animation = 'fireworkSpark 1.5s ease-out forwards';
+            spark.style.setProperty('--spark-angle', angle + 'deg');
+            spark.style.setProperty('--spark-velocity', velocity + 'px');
+            
+            document.body.appendChild(spark);
+            
+            setTimeout(() => {
+                if (spark.parentNode) {
+                    spark.parentNode.removeChild(spark);
+                }
+            }, 1500);
+        }, i * 50);
+    }
+}
