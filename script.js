@@ -76,7 +76,7 @@ function createLoaderHearts() {
 function createLoaderWords() {
     const container = document.querySelector('.loader-words-rain');
     if (!container) return;
-    const words = ['ola', 'tqm', 'hola', 'amor', 'gaby', 'si'];
+    const words = ['ola', 'tqm', 'amor', 'gaby', 'si']; // 'hola' removido
 
     loaderWordsIntervalId = setInterval(() => {
         const word = document.createElement('div');
@@ -126,12 +126,12 @@ function startMainEffects() {
     createFloatingHearts();
     addSparkleEffect();
     addMouseTrail();
-    addScreenShake();
+    // addScreenShake(); // Desactivado para evitar movimientos bruscos
     addRainbowEffect();
     addKeyboardEffects();
     addRandomHeartBursts();
     addFloatingBubbles();
-    addGlitchEffect();
+    // addGlitchEffect(); // Desactivado para evitar efecto de error
 }
 
 // Crear corazones flotantes estilo Minecraft
@@ -513,28 +513,25 @@ style.textContent = `
 document.head.appendChild(style);
 
 // Funciones adicionales para interactividad
-document.addEventListener('mousemove', function(e) {
-    // Efecto sutil de seguimiento del mouse
-    const card = document.querySelector('.invitation-card');
-    if (card) {
-        const rect = card.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        
-        const deltaX = (e.clientX - centerX) / 50;
-        const deltaY = (e.clientY - centerY) / 50;
-        
-        card.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(1.01)`;
-    }
-});
+// Desactivar el seguimiento del mouse sobre la tarjeta para que no se mueva raro
+// document.addEventListener('mousemove', function(e) {
+//     const card = document.querySelector('.invitation-card');
+//     if (card) {
+//         const rect = card.getBoundingClientRect();
+//         const centerX = rect.left + rect.width / 2;
+//         const centerY = rect.top + rect.height / 2;
+//         const deltaX = (e.clientX - centerX) / 50;
+//         const deltaY = (e.clientY - centerY) / 50;
+//         card.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(1.01)`;
+//     }
+// });
 
-// Resetear posición cuando el mouse sale
-document.addEventListener('mouseleave', function() {
-    const card = document.querySelector('.invitation-card');
-    if (card) {
-        card.style.transform = 'translate(0, 0) scale(1)';
-    }
-});
+// document.addEventListener('mouseleave', function() {
+//     const card = document.querySelector('.invitation-card');
+//     if (card) {
+//         card.style.transform = 'translate(0, 0) scale(1)';
+//     }
+// });
 
 // Agregar efecto de teclado para respuestas rápidas (solo Sí)
 document.addEventListener('keydown', function(e) {
