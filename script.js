@@ -7,6 +7,11 @@ let rainbowInterval;
 let particleExplosions = [];
 let loadingProgress = 0;
 let loadingInterval;
+// Añadidos para el loader mejorado
+let loaderHeartsIntervalId;
+let loaderWordsIntervalId;
+let loaderStartTime;
+let loaderDuration = 10000; // 10 segundos
 
 // Inicializar cuando se carga la página
 document.addEventListener('DOMContentLoaded', function() {
@@ -17,94 +22,103 @@ document.addEventListener('DOMContentLoaded', function() {
 function startFullscreenLoader() {
     const progressBar = document.getElementById('loadingProgress');
     const percentageText = document.getElementById('loadingPercentage');
-    
+
+    // Bloquear scroll mientras carga
+    document.body.style.overflow = 'hidden';
+
     // Crear lluvia de corazones y palabras en el loader
     createLoaderHearts();
     createLoaderWords();
-    
-    // Simular progreso de carga
+
+    // Progreso basado en tiempo exacto (10s)
+    loaderStartTime = performance.now();
     loadingInterval = setInterval(() => {
-        loadingProgress += Math.random() * 3 + 1;
-        if (loadingProgress > 100) {
-            loadingProgress = 100;
-        }
-        
-        progressBar.style.width = loadingProgress + '%';
-        percentageText.textContent = Math.floor(loadingProgress) + '%';
-        
+        const elapsed = performance.now() - loaderStartTime;
+        loadingProgress = Math.min(100, (elapsed / loaderDuration) * 100);
+
+        if (progressBar) progressBar.style.width = loadingProgress + '%';
+        if (percentageText) percentageText.textContent = Math.floor(loadingProgress) + '%';
+
         if (loadingProgress >= 100) {
             clearInterval(loadingInterval);
-            setTimeout(hideLoader, 500);
+            setTimeout(hideLoader, 400);
         }
-    }, 150);
+    }, 100);
 }
 
 // Crear corazones en el loader
 function createLoaderHearts() {
     const container = document.querySelector('.loader-hearts-rain');
-    
-    setInterval(() => {
+    if (!container) return;
+
+    loaderHeartsIntervalId = setInterval(() => {
         for (let i = 0; i < 3; i++) {
             setTimeout(() => {
                 const heart = document.createElement('div');
                 heart.className = 'loader-heart';
                 heart.textContent = '♥';
                 heart.style.left = Math.random() * 100 + '%';
-                heart.style.animationDelay = Math.random() * 2 + 's';
+                heart.style.animationDelay = Math.random() * 1.5 + 's';
                 heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
-                
+                heart.style.fontSize = (Math.random() * 20 + 28) + 'px'; // 28-48px
+
                 container.appendChild(heart);
-                
+
                 setTimeout(() => {
-                    if (heart.parentNode) {
-                        heart.parentNode.removeChild(heart);
-                    }
-                }, 5000);
-            }, i * 200);
+                    heart.remove();
+                }, 6000);
+            }, i * 180);
         }
-    }, 800);
+    }, 700);
 }
 
 // Crear palabras cayendo en el loader
 function createLoaderWords() {
     const container = document.querySelector('.loader-words-rain');
+    if (!container) return;
     const words = ['ola', 'tqm', 'hola', 'amor', 'gaby', 'si'];
-    
-    setInterval(() => {
+
+    loaderWordsIntervalId = setInterval(() => {
         const word = document.createElement('div');
         word.className = 'loader-word';
         word.textContent = words[Math.floor(Math.random() * words.length)];
         word.style.left = Math.random() * 100 + '%';
-        word.style.animationDelay = Math.random() * 1 + 's';
+        word.style.animationDelay = Math.random() * 0.8 + 's';
         word.style.animationDuration = (Math.random() * 2 + 4) + 's';
-        
+
         container.appendChild(word);
-        
+
         setTimeout(() => {
-            if (word.parentNode) {
-                word.parentNode.removeChild(word);
-            }
-        }, 6000);
-    }, 600);
+            word.remove();
+        }, 6500);
+    }, 500);
 }
 
 // Ocultar loader y mostrar contenido principal
 function hideLoader() {
     const loader = document.getElementById('fullscreenLoader');
     const mainContent = document.getElementById('mainContent');
-    
+
+    // Limpiar intervals del loader
+    if (loaderHeartsIntervalId) clearInterval(loaderHeartsIntervalId);
+    if (loaderWordsIntervalId) clearInterval(loaderWordsIntervalId);
+
+    // Desvanecer loader
     loader.style.opacity = '0';
-    loader.style.transition = 'opacity 1s ease-out';
-    
+    loader.style.transition = 'opacity 0.8s ease-out';
+
     setTimeout(() => {
         loader.style.display = 'none';
+        // Restaurar scroll
+        document.body.style.overflow = '';
+
+        // Mostrar contenido
         mainContent.style.display = 'block';
-        
-        setTimeout(() => {
+        requestAnimationFrame(() => {
             mainContent.classList.add('loaded');
             startMainEffects();
-        }, 100);
-    }, 1000);
+        });
+    }, 800);
 }
 
 // Iniciar efectos del contenido principal
@@ -534,15 +548,15 @@ document.addEventListener('keydown', function(e) {
 // Rastro del mouse con corazones
 function addMouseTrail() {
     let lastMousePos = { x: 0, y: 0 };
-    
+
     document.addEventListener('mousemove', function(e) {
         // Crear corazón cada cierta distancia
         const distance = Math.sqrt(
-            Math.pow(e.clientX - lastMousePos.x, 2) + 
+            Math.pow(e.clientX - lastMousePos.x, 2) +
             Math.pow(e.clientY - lastMousePos.y, 2)
         );
-        
-        if (distance > 20) { // Menor distancia = más corazones
+
+        if (distance > 15) { // Más frecuente
             createTrailHeart(e.clientX, e.clientY);
             lastMousePos = { x: e.clientX, y: e.clientY };
         }
@@ -556,20 +570,18 @@ function createTrailHeart(x, y) {
     heart.style.left = x + 'px';
     heart.style.top = y + 'px';
     heart.style.color = '#ff69b4';
-    heart.style.fontSize = '25px'; // Más grande
+    heart.style.fontSize = (Math.random() * 16 + 22) + 'px'; // 22-38px
     heart.style.pointerEvents = 'none';
     heart.style.zIndex = '999';
     heart.style.animation = 'trailFade 1.5s ease-out forwards';
     heart.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.3)';
     heart.style.filter = 'drop-shadow(0 0 8px #ff69b4)';
-    
+
     document.body.appendChild(heart);
-    
+
     setTimeout(() => {
-        if (heart.parentNode) {
-            heart.parentNode.removeChild(heart);
-        }
-    }, 1500);
+        heart.remove();
+    }, 1600);
 }
 
 // Efecto de vibración de pantalla
