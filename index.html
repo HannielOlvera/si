@@ -8,9 +8,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="hearts-container">
-        <!-- Los corazones se generarán con JavaScript -->
+    <!-- Pantalla de carga completa -->
+    <div class="fullscreen-loader" id="fullscreenLoader">
+        <div class="loader-content">
+            <div class="loading-bar-container">
+                <div class="loading-bar">
+                    <div class="loading-progress" id="loadingProgress"></div>
+                </div>
+                <div class="loading-percentage" id="loadingPercentage">0%</div>
+            </div>
+            <div class="loader-hearts-rain"></div>
+            <div class="loader-words-rain"></div>
+        </div>
     </div>
+
+    <!-- Contenido principal (oculto inicialmente) -->
+    <div class="main-content" id="mainContent" style="display: none;">
+        <div class="hearts-container">
+            <!-- Los corazones se generarán con JavaScript -->
+        </div>
     
     <div class="main-container">
         <div class="invitation-card">
@@ -43,7 +59,7 @@
                 <h2 class="love-message">TQM</h2>
             </div>
         </div>
-    </div>
+    </div> <!-- Cierra main-content -->
     
     <script src="script.js"></script>
 </body>

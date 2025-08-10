@@ -5,11 +5,111 @@ let mouseTrailInterval;
 let screenShakeInterval;
 let rainbowInterval;
 let particleExplosions = [];
+let loadingProgress = 0;
+let loadingInterval;
 
 // Inicializar cuando se carga la página
 document.addEventListener('DOMContentLoaded', function() {
+    startFullscreenLoader();
+});
+
+// Pantalla de carga completa
+function startFullscreenLoader() {
+    const progressBar = document.getElementById('loadingProgress');
+    const percentageText = document.getElementById('loadingPercentage');
+    
+    // Crear lluvia de corazones y palabras en el loader
+    createLoaderHearts();
+    createLoaderWords();
+    
+    // Simular progreso de carga
+    loadingInterval = setInterval(() => {
+        loadingProgress += Math.random() * 3 + 1;
+        if (loadingProgress > 100) {
+            loadingProgress = 100;
+        }
+        
+        progressBar.style.width = loadingProgress + '%';
+        percentageText.textContent = Math.floor(loadingProgress) + '%';
+        
+        if (loadingProgress >= 100) {
+            clearInterval(loadingInterval);
+            setTimeout(hideLoader, 500);
+        }
+    }, 150);
+}
+
+// Crear corazones en el loader
+function createLoaderHearts() {
+    const container = document.querySelector('.loader-hearts-rain');
+    
+    setInterval(() => {
+        for (let i = 0; i < 3; i++) {
+            setTimeout(() => {
+                const heart = document.createElement('div');
+                heart.className = 'loader-heart';
+                heart.textContent = '♥';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDelay = Math.random() * 2 + 's';
+                heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
+                
+                container.appendChild(heart);
+                
+                setTimeout(() => {
+                    if (heart.parentNode) {
+                        heart.parentNode.removeChild(heart);
+                    }
+                }, 5000);
+            }, i * 200);
+        }
+    }, 800);
+}
+
+// Crear palabras cayendo en el loader
+function createLoaderWords() {
+    const container = document.querySelector('.loader-words-rain');
+    const words = ['ola', 'tqm', 'hola', 'amor', 'gaby', 'si'];
+    
+    setInterval(() => {
+        const word = document.createElement('div');
+        word.className = 'loader-word';
+        word.textContent = words[Math.floor(Math.random() * words.length)];
+        word.style.left = Math.random() * 100 + '%';
+        word.style.animationDelay = Math.random() * 1 + 's';
+        word.style.animationDuration = (Math.random() * 2 + 4) + 's';
+        
+        container.appendChild(word);
+        
+        setTimeout(() => {
+            if (word.parentNode) {
+                word.parentNode.removeChild(word);
+            }
+        }, 6000);
+    }, 600);
+}
+
+// Ocultar loader y mostrar contenido principal
+function hideLoader() {
+    const loader = document.getElementById('fullscreenLoader');
+    const mainContent = document.getElementById('mainContent');
+    
+    loader.style.opacity = '0';
+    loader.style.transition = 'opacity 1s ease-out';
+    
+    setTimeout(() => {
+        loader.style.display = 'none';
+        mainContent.style.display = 'block';
+        
+        setTimeout(() => {
+            mainContent.classList.add('loaded');
+            startMainEffects();
+        }, 100);
+    }, 1000);
+}
+
+// Iniciar efectos del contenido principal
+function startMainEffects() {
     createFloatingHearts();
-    createLoadingHearts();
     addSparkleEffect();
     addMouseTrail();
     addScreenShake();
@@ -18,88 +118,6 @@ document.addEventListener('DOMContentLoaded', function() {
     addRandomHeartBursts();
     addFloatingBubbles();
     addGlitchEffect();
-});
-
-// Crear corazones en la pantalla de carga estilo Minecraft
-function createLoadingHearts() {
-    const loadingContainer = document.querySelector('.minecraft-hearts-rain');
-    if (!loadingContainer) return;
-    
-    // Corazones pixelados
-    loadingHeartsInterval = setInterval(() => {
-        // Crear múltiples corazones a la vez
-        for (let j = 0; j < 3; j++) {
-            setTimeout(() => {
-                const heart = document.createElement('div');
-                heart.className = 'minecraft-heart-pixel';
-                
-                // Posición aleatoria en x
-                heart.style.left = Math.random() * 270 + 'px';
-                heart.style.animationDuration = (Math.random() * 2 + 2) + 's';
-                heart.style.animationDelay = Math.random() * 0.5 + 's';
-                
-                // Colores rosa estilo Minecraft más vibrantes
-                const colors = ['#ff1493', '#dc143c', '#ff69b4', '#ff6b9d'];
-                heart.style.background = colors[Math.floor(Math.random() * colors.length)];
-                
-                // Tamaños variables
-                const size = Math.random() * 8 + 16;
-                heart.style.width = size + 'px';
-                heart.style.height = size + 'px';
-                
-                loadingContainer.appendChild(heart);
-                
-                // Remover después de la animación
-                setTimeout(() => {
-                    if (heart.parentNode) {
-                        heart.parentNode.removeChild(heart);
-                    }
-                }, 4000);
-            }, j * 100);
-        }
-    }, 120);  // Más frecuente para lluvia densa
-    
-    // Palabras cayendo
-    const wordInterval = setInterval(() => {
-        createFallingWord();
-    }, 800);
-    
-    // Parar todo después de 10 segundos
-    setTimeout(() => {
-        clearInterval(loadingHeartsInterval);
-        clearInterval(wordInterval);
-    }, 10000);
-}
-
-// Crear palabras cayendo
-function createFallingWord() {
-    const loadingContainer = document.querySelector('.minecraft-hearts-rain');
-    if (!loadingContainer) return;
-    
-    const words = ['ola', 'tqm', '♥', 'hola', 'amor', 'si'];
-    const word = document.createElement('div');
-    word.textContent = words[Math.floor(Math.random() * words.length)];
-    word.className = 'falling-word';
-    
-    word.style.position = 'absolute';
-    word.style.left = Math.random() * 250 + 'px';
-    word.style.top = '-20px';
-    word.style.color = '#ff69b4';
-    word.style.fontSize = '14px';
-    word.style.fontFamily = 'Courier New, monospace';
-    word.style.fontWeight = 'bold';
-    word.style.textShadow = '2px 2px 0px rgba(0,0,0,0.8)';
-    word.style.animation = 'wordFall 3s linear forwards';
-    word.style.pointerEvents = 'none';
-    word.style.zIndex = '10';
-    
-    loadingContainer.appendChild(word);
-    
-    setTimeout(() => {
-        if (word.parentNode) {
-            word.parentNode.removeChild(word);
-        }
-    }, 3000);
 }
 
 // Crear corazones flotantes estilo Minecraft
@@ -354,11 +372,11 @@ style.textContent = `
     @keyframes trailFade {
         0% {
             opacity: 1;
-            transform: scale(1);
+            transform: scale(1) rotate(0deg);
         }
         100% {
             opacity: 0;
-            transform: scale(0.3) translateY(-20px);
+            transform: scale(0.3) translateY(-30px) rotate(180deg);
         }
     }
     
@@ -524,7 +542,7 @@ function addMouseTrail() {
             Math.pow(e.clientY - lastMousePos.y, 2)
         );
         
-        if (distance > 30) {
+        if (distance > 20) { // Menor distancia = más corazones
             createTrailHeart(e.clientX, e.clientY);
             lastMousePos = { x: e.clientX, y: e.clientY };
         }
@@ -538,10 +556,12 @@ function createTrailHeart(x, y) {
     heart.style.left = x + 'px';
     heart.style.top = y + 'px';
     heart.style.color = '#ff69b4';
-    heart.style.fontSize = '12px';
+    heart.style.fontSize = '25px'; // Más grande
     heart.style.pointerEvents = 'none';
     heart.style.zIndex = '999';
-    heart.style.animation = 'trailFade 1s ease-out forwards';
+    heart.style.animation = 'trailFade 1.5s ease-out forwards';
+    heart.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.3)';
+    heart.style.filter = 'drop-shadow(0 0 8px #ff69b4)';
     
     document.body.appendChild(heart);
     
@@ -549,7 +569,7 @@ function createTrailHeart(x, y) {
         if (heart.parentNode) {
             heart.parentNode.removeChild(heart);
         }
-    }, 1000);
+    }, 1500);
 }
 
 // Efecto de vibración de pantalla
