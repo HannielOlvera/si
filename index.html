@@ -14,12 +14,12 @@
     
     <div class="main-container">
         <div class="invitation-card">
-            <h1 class="title">💖 Una Invitación Especial 💖</h1>
+            <h1 class="title">Una Invitación Especial</h1>
             
             <div class="photo-section">
-                <div class="photo-frame">
-                    <img src="https://via.placeholder.com/300x300/ff69b4/ffffff?text=Tu+Foto+Aquí" alt="Nuestra foto juntos" id="couple-photo">
-                    <div class="photo-overlay">📸</div>
+                <div class="loading-screen">
+                    <div class="minecraft-hearts-rain"></div>
+                    <div class="loading-text">Cargando amor...</div>
                 </div>
             </div>
             
@@ -28,25 +28,20 @@
                 <p class="subtitle">caminar+darnos las manos+fotos</p>
             </div>
             
-            <div class="hands-section">
-                <div class="hands-animation">
-                    <span class="hand left-hand">🤚</span>
-                    <span class="heart-between">💕</span>
-                    <span class="hand right-hand">🤚</span>
-                </div>
-                <p class="hands-text">Nuestras manos juntas</p>
-            </div>
-            
             <div class="buttons-section">
                 <button class="btn btn-yes" onclick="handleYes()">
-                    ¡SÍ! 💕
+                    SÍ
                 </button>
                 <button class="btn btn-yes" onclick="handleYes()" id="yesBtn2">
-                    ¡SÍ! 💖
+                    SÍ
                 </button>
                 <button class="btn btn-yes" onclick="handleYes()" id="yesBtn3">
-                    ¡SÍ! 🌹
+                    SÍ
                 </button>
+            </div>
+            
+            <div class="message-area" id="messageArea" style="display: none;">
+                <h2 class="love-message">TQM</h2>
             </div>
         </div>
     </div>

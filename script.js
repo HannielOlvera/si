@@ -1,12 +1,42 @@
 // Variables globales
-let heartsInterval;
-let noClickCount = 0;
+let heartsInterval;    // Solo corazones básicos pixelados
+    const heartSymbols = ['♥', '♥', '♥', '♥'];  // Solo corazones simpleset loadingHeartsInterval;
 
 // Inicializar cuando se carga la página
 document.addEventListener('DOMContentLoaded', function() {
     createFloatingHearts();
+    createLoadingHearts();
     addSparkleEffect();
 });
+
+// Crear corazones en la pantalla de carga estilo Minecraft
+function createLoadingHearts() {
+    const loadingContainer = document.querySelector('.minecraft-hearts-rain');
+    if (!loadingContainer) return;
+    
+    loadingHeartsInterval = setInterval(() => {
+        const heart = document.createElement('div');
+        heart.className = 'minecraft-heart-pixel';
+        
+        // Posición aleatoria en x
+        heart.style.left = Math.random() * 280 + 'px';
+        heart.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        heart.style.animationDelay = Math.random() * 1 + 's';
+        
+        // Colores rosa estilo Minecraft
+        const colors = ['#ff69b4', '#ff1493', '#dc143c', '#ff6b9d'];
+        heart.style.background = colors[Math.floor(Math.random() * colors.length)];
+        
+        loadingContainer.appendChild(heart);
+        
+        // Remover después de la animación
+        setTimeout(() => {
+            if (heart.parentNode) {
+                heart.parentNode.removeChild(heart);
+            }
+        }, 4000);
+    }, 150);
+}
 
 // Crear corazones flotantes estilo Minecraft
 function createFloatingHearts() {
@@ -24,10 +54,10 @@ function createFloatingHearts() {
         heart.style.animationDuration = (Math.random() * 4 + 3) + 's';
         heart.style.animationDelay = Math.random() * 2 + 's';
         
-        // Colores estilo Minecraft
-        const colors = ['#ff1493', '#dc143c', '#ff69b4', '#ff6b9d', '#d63384'];
+        // Solo colores rosas como pediste
+        const colors = ['#ff69b4', '#ff1493', '#dc143c', '#ff6b9d'];
         heart.style.color = colors[Math.floor(Math.random() * colors.length)];
-        heart.style.fontSize = (Math.random() * 15 + 20) + 'px';
+        heart.style.fontSize = (Math.random() * 10 + 15) + 'px';
         
         heartsContainer.appendChild(heart);
         
@@ -37,7 +67,7 @@ function createFloatingHearts() {
                 heart.parentNode.removeChild(heart);
             }
         }, 7000);
-    }, 200);
+    }, 400);  // Menos frecuentes para mejor efecto
 }
 
 // Efecto de brillos al hacer clic
@@ -64,11 +94,10 @@ function createSparkle(x, y) {
 
 // Manejar respuesta "SÍ" (ahora todas las respuestas son positivas)
 function handleYes() {
-    const messageSection = document.getElementById('messageSection');
-    const successMessage = document.getElementById('successMessage');
+    const messageArea = document.getElementById('messageArea');
     
-    // Mostrar mensaje de éxito
-    messageSection.style.display = 'block';
+    // Mostrar mensaje "TQM"
+    messageArea.style.display = 'block';
     
     // Crear explosión de corazones
     createHeartExplosion();
@@ -77,11 +106,16 @@ function handleYes() {
     playSuccessSound();
     
     // Ocultar botones
-    document.querySelector('.buttons-section').style.opacity = '0.5';
+    document.querySelector('.buttons-section').style.opacity = '0.3';
     document.querySelector('.buttons-section').style.pointerEvents = 'none';
     
     // Cambiar el fondo a algo más festivo
-    document.body.style.background = 'linear-gradient(135deg, #ff9a9e 0%, #fad0c4 50%, #ffd1ff 100%)';
+    document.body.style.background = '#ff69b4';
+    
+    // Parar la animación de carga
+    if (loadingHeartsInterval) {
+        clearInterval(loadingHeartsInterval);
+    }
     
     // Agregar confetti
     setTimeout(() => {
